@@ -1,0 +1,30 @@
+.container {
+  display: grid;
+  grid-template-columns: auto 400px;
+  grid-template-rows: 60px 500px auto;
+
+  width: 100vw;
+  height: 100vh;
+}
+
+.bots {
+  grid-column: 1;
+  grid-row: 1;
+
+  border-bottom: 1px solid var(--main-border-color);
+}
+
+.chart {
+  grid-column: 1;
+  grid-row: 2;
+
+  position: relative;
+}
+
+.notifications {
+  grid-column: 2;
+  grid-row-start: 1;
+  grid-row-end: span 3;
+
+  border-left: 1px solid var(--main-border-color);
+}

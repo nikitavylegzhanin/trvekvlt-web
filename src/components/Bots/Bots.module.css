@@ -1,0 +1,28 @@
+.bots {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  height: 100%;
+}
+
+.bots > li {
+  float: left;
+  height: inherit;
+}
+
+.bot {
+  color: #abb2bf;
+  width: 100px;
+  height: inherit;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.bot:not(.active):hover {
+  background-color: rgba(255, 20, 147, 0.1);
+}
+
+.active {
+  background-color: rgba(255, 20, 147, 0.3);
+}

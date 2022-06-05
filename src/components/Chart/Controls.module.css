@@ -1,0 +1,28 @@
+.controls {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.interval {
+  border: 1px solid var(--main-border-color);
+  padding: 0.2rem 0;
+  width: 40px;
+  background-image: linear-gradient(#3a3f4b, #353b45);
+}
+
+.interval:not(:last-child) {
+  border-right: none;
+}
+
+.interval:first-child {
+  border-radius: 0.3rem 0 0 0.3rem;
+}
+
+.interval:last-child {
+  border-radius: 0 0.3rem 0.3rem 0;
+}
+
+.active {
+  box-shadow: inset 0 0 10px rgb(255, 20, 147);
+}

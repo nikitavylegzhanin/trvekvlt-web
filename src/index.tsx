@@ -2,9 +2,9 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ApolloProvider } from '@apollo/client'
 
+import App from 'components/App'
 import reportWebVitals from './reportWebVitals'
 import client from './client'
-import App from './App'
 import './index.css'
 
 const root = createRoot(document.getElementById('root') as HTMLElement)
