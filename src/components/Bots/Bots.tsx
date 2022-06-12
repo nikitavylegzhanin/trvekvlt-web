@@ -15,11 +15,6 @@ const GET_BOTS = gql`
         id
         value
       }
-      trends {
-        id
-        direction
-        createdAt
-      }
     }
   }
 `
@@ -27,12 +22,6 @@ const GET_BOTS = gql`
 export type Level = {
   id: string
   value: number
-}
-
-export type Trend = {
-  id: string
-  direction: string
-  createdAt: Date
 }
 
 export type Bot = {

@@ -14,7 +14,7 @@ const App = () => {
       </section>
 
       <section className={styles.chart}>
-        {!!bot && <Chart figi={bot.figi} levels={bot.levels} />}
+        {!!bot && <Chart botId={bot.id} levels={bot.levels} />}
       </section>
 
       <section className={styles.notifications} />

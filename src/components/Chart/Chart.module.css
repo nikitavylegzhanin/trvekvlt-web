@@ -1,0 +1,6 @@
+.tooltip {
+  background-color: var(--main-background-color);
+  border: 1px solid var(--main-border-color);
+  box-shadow: 1px 1px 6px var(--main-border-color);
+  padding: 0.5rem;
+}

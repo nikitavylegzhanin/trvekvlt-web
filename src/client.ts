@@ -1,8 +1,39 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client'
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  ApolloLink,
+} from '@apollo/client'
+
+const httpLink = new HttpLink({ uri: process.env.REACT_APP_API_URL })
+
+const parseDateLink = new ApolloLink((operation, forward) =>
+  forward(operation).map((response) => {
+    if (response?.data?.chart?.candles) {
+      response.data.chart.candles = response.data.chart.candles.map(
+        (candle: any) => ({
+          ...candle,
+          date: new Date(candle.date),
+        })
+      )
+    }
+
+    if (response?.data?.chart?.orders) {
+      response.data.chart.orders = response.data.chart.orders.map(
+        (order: any) => ({
+          ...order,
+          createdAt: new Date(order.createdAt),
+        })
+      )
+    }
+
+    return response
+  })
+)
 
 const client = new ApolloClient({
-  uri: process.env.REACT_APP_API_URL,
   cache: new InMemoryCache(),
+  link: parseDateLink.concat(httpLink),
 })
 
 export default client

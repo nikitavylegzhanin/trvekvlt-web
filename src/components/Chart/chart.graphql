@@ -1,0 +1,36 @@
+query Chart($botId: ID!, $from: Date!, $to: Date!, $interval: Int) {
+  chart(botId: $botId, from: $from, to: $to, interval: $interval) {
+    candles {
+      date
+      low
+      open
+      close
+      high
+      volume
+    }
+    trends {
+      id
+      direction
+      type
+      createdAt
+      updatedAt
+    }
+    orders {
+      id
+      price
+      currency
+      quantity
+      direction
+      type
+      rule
+      createdAt
+      updatedAt
+      position {
+        id
+        status
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}

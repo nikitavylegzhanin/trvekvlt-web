@@ -1,5 +1,7 @@
 :root {
+  --main-background-color: #21252b;
   --main-border-color: #181a1f;
+  --main-text-color: #abb2bf;
 }
 
 body {
@@ -10,11 +12,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  background-color: #21252b;
+  background-color: var(--main-background-color);
+  color: var(--main-text-color);
 }
 
 button {
   background-color: transparent;
   border: none;
   padding: 0px;
+}
+
+.google-visualization-tooltip {
+  border: none !important;
+  border-radius: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
 }
