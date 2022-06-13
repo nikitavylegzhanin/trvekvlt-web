@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ApolloProvider } from '@apollo/client'
+import 'react-day-picker/dist/style.css'
 
 import App from 'components/App'
 import reportWebVitals from './reportWebVitals'

@@ -1,45 +1,73 @@
 import { Dispatch, SetStateAction, useCallback, MouseEvent } from 'react'
+import { set } from 'date-fns'
 
+import TradingInterval from './TradingInterval'
 import styles from './Controls.module.css'
 
 type Props = {
-  interval: 2 | 3 | 4
-  setInterval: Dispatch<SetStateAction<2 | 3 | 4>>
+  candleInterval: 2 | 3 | 4
+  setCandleInterval: Dispatch<SetStateAction<2 | 3 | 4>>
+  tradingInterval: { from: Date; to: Date }
+  setTradingInterval: Dispatch<SetStateAction<{ from: Date; to: Date }>>
 }
 
-const intervals = [
+const candleIntervals = [
   { value: 2, label: '5m' },
   { value: 3, label: '15m' },
   { value: 4, label: '1h' },
 ]
 
-const ChartControls = ({ interval, setInterval }: Props) => {
+const ChartControls = ({
+  candleInterval,
+  setCandleInterval,
+  tradingInterval,
+  setTradingInterval,
+}: Props) => {
   const onClick = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
       const value = parseInt(e.currentTarget.value)
 
       if (value !== 2 && value !== 3 && value !== 4) return
 
-      return setInterval(value)
+      return setCandleInterval(value)
     },
-    [setInterval]
+    [setCandleInterval]
+  )
+
+  const onSelectDay = useCallback(
+    (date?: Date) => {
+      if (date) {
+        setTradingInterval({
+          from: set(date, { hours: 16 }),
+          to: set(date, { hours: 23 }),
+        })
+      }
+    },
+    [setTradingInterval]
   )
 
   return (
     <div className={styles.controls}>
-      {intervals.map(({ value, label }) => (
-        <button
-          key={value}
-          value={value}
-          className={[
-            styles.interval,
-            interval === value ? styles.active : undefined,
-          ].join(' ')}
-          onClick={onClick}
-        >
-          {label}
-        </button>
-      ))}
+      <TradingInterval
+        selectedDate={tradingInterval.from}
+        onSelect={onSelectDay}
+      />
+
+      <div className={styles.intervals}>
+        {candleIntervals.map(({ value, label }) => (
+          <button
+            key={value}
+            value={value}
+            className={[
+              styles.interval,
+              candleInterval === value ? styles.active : undefined,
+            ].join(' ')}
+            onClick={onClick}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

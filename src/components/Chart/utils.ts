@@ -5,23 +5,27 @@ import { Level } from 'components/Bots'
 import { Candle, Order, Trend } from './Chart.types'
 import styles from './Chart.module.css'
 
-export const getChartDataHeaders = (levels: Level[]) => [
+const ordersRows = [
+  'Orders',
+  { type: 'string', role: 'style' },
+  { type: 'string', role: 'tooltip', p: { html: true } },
+]
+
+export const getChartDataHeaders = (levels: Level[], withOrders: boolean) => [
   { type: 'date', label: 'Date' },
   { type: 'number' }, // low
   { type: 'number' }, // open
   { type: 'number' }, // close
   { type: 'number' }, // high
   { type: 'string', role: 'tooltip', p: { html: true } }, // candle tooltip
-  'Orders',
-  { type: 'string', role: 'style' },
-  { type: 'string', role: 'tooltip', p: { html: true } },
+  ...(withOrders ? ordersRows : []),
   ...levels.map((level) => ({ type: 'number', label: level.id.toString() })),
 ]
 
-const getFirstDate = (date: Date, interval: 2 | 3 | 4) =>
+const getFirstDate = (date: Date, candleInterval: 2 | 3 | 4) =>
   sub(date, {
-    hours: interval === 4 ? 1 : undefined,
-    minutes: interval === 2 ? 5 : interval === 3 ? 15 : undefined,
+    hours: candleInterval === 4 ? 1 : undefined,
+    minutes: candleInterval === 2 ? 5 : candleInterval === 3 ? 15 : undefined,
   })
 
 export const getCandleTooltip = (candle: Candle, interval: 2 | 3 | 4) => `
@@ -108,9 +112,6 @@ export const DEFAULT_CHART_OPTIONS: GoogleChartOptions = {
     textStyle: {
       color: '#636d83',
     },
-  },
-  series: {
-    1: { type: 'scatter', dataOpacity: 0.8 }, // orders
   },
 }
 

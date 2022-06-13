@@ -7,6 +7,7 @@
     "date-fns": "^2.28.0",
     "graphql.macro": "^1.4.2",
     "react": "^18.1.0",
+    "react-day-picker": "^8.0.7",
     "react-dom": "^18.1.0",
     "react-google-charts": "^4.0.0",
     "web-vitals": "^2.1.4"

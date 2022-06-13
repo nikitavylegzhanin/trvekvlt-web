@@ -26,13 +26,16 @@ type Props = {
 }
 
 const Chart = ({ botId, levels }: Props) => {
-  const [interval, setInterval] = useState<2 | 3 | 4>(2)
+  const [candleInterval, setCandleInterval] = useState<2 | 3 | 4>(2)
+  const [tradingInterval, setTradingInterval] = useState({
+    from: new Date('2022-06-06T16:00:01'),
+    to: new Date('2022-06-06T23:59:59'),
+  })
   const { loading, error, data } = useQuery<{ chart: ChartData }>(chartQuery, {
     variables: {
       botId,
-      from: '2022-06-06T16:00:01',
-      to: '2022-06-06T23:59:59',
-      interval,
+      interval: candleInterval,
+      ...tradingInterval,
     },
   })
 
@@ -53,20 +56,24 @@ const Chart = ({ botId, levels }: Props) => {
       return []
     }
 
+    const withOrders = !!data.chart.orders.length
+
     return [
-      getChartDataHeaders(levels),
+      getChartDataHeaders(levels, withOrders),
       ...data.chart.candles.map((candle, index, candles) => {
         const nextCandle = candles[index + 1]
 
-        const candleOrders = nextCandle
-          ? data.chart.orders
-              .filter(({ createdAt }) =>
-                isWithinInterval(createdAt, {
-                  start: candle.date,
-                  end: nextCandle.date,
-                })
-              )
-              .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+        const candleOrders = withOrders
+          ? nextCandle
+            ? data.chart.orders
+                .filter(({ createdAt }) =>
+                  isWithinInterval(createdAt, {
+                    start: candle.date,
+                    end: nextCandle.date,
+                  })
+                )
+                .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+            : []
           : []
 
         return [
@@ -75,24 +82,32 @@ const Chart = ({ botId, levels }: Props) => {
           candle.open,
           candle.close,
           candle.high,
-          getCandleTooltip(candle, interval),
-          candleOrders.length ? getOrdersAvgPrice(candleOrders) : null,
-          candleOrders.length ? getOrdersPoint(candleOrders) : null,
-          candleOrders.length ? getOrdersTooltip(candleOrders) : null,
+          getCandleTooltip(candle, candleInterval),
+          ...(withOrders
+            ? [
+                candleOrders.length ? getOrdersAvgPrice(candleOrders) : null,
+                candleOrders.length ? getOrdersPoint(candleOrders) : null,
+                candleOrders.length ? getOrdersTooltip(candleOrders) : null,
+              ]
+            : []),
           ...levels.map((level) => level.value),
         ]
       }),
     ]
-  }, [levels, data?.chart, interval])
+  }, [levels, data?.chart, candleInterval])
 
   const options = useMemo(
     () => ({
       ...DEFAULT_CHART_OPTIONS,
       series: {
-        ...DEFAULT_CHART_OPTIONS.series,
+        ...(data?.chart.orders.length
+          ? {
+              1: { type: 'scatter', dataOpacity: 0.8 }, // orders
+            }
+          : undefined),
         ...levels
           .map((_, index) => ({
-            [index + 2]: {
+            [index + (data?.chart.orders.length ? 2 : 1)]: {
               type: 'line',
               color: '#abb2bf',
               enableInteractivity: false,
@@ -105,7 +120,7 @@ const Chart = ({ botId, levels }: Props) => {
         viewWindow: { max, min },
       },
     }),
-    [levels, max, min]
+    [levels, max, min, data?.chart.orders]
   )
 
   const chartEvents = useMemo(
@@ -119,7 +134,7 @@ const Chart = ({ botId, levels }: Props) => {
               min
             ),
           ],
-    [data?.chart]
+    [data?.chart, min]
   )
 
   if (loading) return <span>Loading...</span>
@@ -140,7 +155,12 @@ const Chart = ({ botId, levels }: Props) => {
         <TrendPoint key={trend.id} {...trend} />
       ))}
 
-      <Controls interval={interval} setInterval={setInterval} />
+      <Controls
+        candleInterval={candleInterval}
+        setCandleInterval={setCandleInterval}
+        tradingInterval={tradingInterval}
+        setTradingInterval={setTradingInterval}
+      />
     </>
   )
 }
