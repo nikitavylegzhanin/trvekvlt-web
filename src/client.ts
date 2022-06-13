@@ -27,6 +27,15 @@ const parseDateLink = new ApolloLink((operation, forward) =>
       )
     }
 
+    if (response?.data?.chart?.trends) {
+      response.data.chart.trends = response.data.chart.trends.map(
+        (trend: any) => ({
+          ...trend,
+          createdAt: new Date(trend.createdAt),
+        })
+      )
+    }
+
     return response
   })
 )

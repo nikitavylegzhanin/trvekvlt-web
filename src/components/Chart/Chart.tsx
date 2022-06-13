@@ -7,6 +7,7 @@ import { isWithinInterval } from 'date-fns'
 import { Bot, Level } from 'components/Bots'
 import { ChartData } from './Chart.types'
 import Controls from './Controls'
+import TrendPoint from './TredPoint'
 import {
   getChartDataHeaders,
   getCandleTooltip,
@@ -14,6 +15,7 @@ import {
   getOrdersPoint,
   getOrdersTooltip,
   DEFAULT_CHART_OPTIONS,
+  getTrendPointsEvent,
 } from './utils'
 
 const chartQuery = loader('./chart.graphql')
@@ -33,6 +35,18 @@ const Chart = ({ botId, levels }: Props) => {
       interval,
     },
   })
+
+  const { max, min } = useMemo(
+    () => ({
+      max:
+        Math.max(...(data?.chart.candles.map((candle) => candle.high) || [0])) +
+        0.02,
+      min:
+        Math.min(...(data?.chart.candles.map((candle) => candle.low) || [0])) -
+        0.02,
+    }),
+    [data?.chart?.candles]
+  )
 
   const chartData = useMemo(() => {
     if (!data?.chart.candles.length) {
@@ -88,19 +102,24 @@ const Chart = ({ botId, levels }: Props) => {
       },
       vAxis: {
         ...DEFAULT_CHART_OPTIONS.vAxis,
-        viewWindow: {
-          max:
-            Math.max(
-              ...(data?.chart.candles.map((candle) => candle.high) || [0])
-            ) + 0.02,
-          min:
-            Math.min(
-              ...(data?.chart.candles.map((candle) => candle.low) || [0])
-            ) - 0.02,
-        },
+        viewWindow: { max, min },
       },
     }),
-    [levels, data?.chart]
+    [levels, max, min]
+  )
+
+  const chartEvents = useMemo(
+    () =>
+      !data?.chart
+        ? []
+        : [
+            getTrendPointsEvent(
+              data.chart.trends,
+              data.chart.candles[0].date,
+              min
+            ),
+          ],
+    [data?.chart]
   )
 
   if (loading) return <span>Loading...</span>
@@ -114,7 +133,12 @@ const Chart = ({ botId, levels }: Props) => {
         height="500px"
         data={chartData}
         options={options}
+        chartEvents={chartEvents}
       />
+
+      {data?.chart.trends.map((trend) => (
+        <TrendPoint key={trend.id} {...trend} />
+      ))}
 
       <Controls interval={interval} setInterval={setInterval} />
     </>

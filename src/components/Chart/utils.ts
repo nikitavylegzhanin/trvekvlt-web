@@ -1,8 +1,8 @@
 import { format, sub } from 'date-fns'
-import { GoogleChartOptions } from 'react-google-charts'
+import { GoogleChartOptions, ReactGoogleChartEvent } from 'react-google-charts'
 
 import { Level } from 'components/Bots'
-import { Candle, Order } from './Chart.types'
+import { Candle, Order, Trend } from './Chart.types'
 import styles from './Chart.module.css'
 
 export const getChartDataHeaders = (levels: Level[]) => [
@@ -113,3 +113,30 @@ export const DEFAULT_CHART_OPTIONS: GoogleChartOptions = {
     1: { type: 'scatter', dataOpacity: 0.8 }, // orders
   },
 }
+
+export const getTrendPointId = (id: Trend['id']) => `chartTrendPoint${id}`
+
+export const getTrendPointsEvent = (
+  trends: Trend[],
+  minX: Date,
+  minY: number
+): ReactGoogleChartEvent => ({
+  eventName: 'ready',
+  callback: (event) => {
+    const chart = event.chartWrapper.getChart() as any
+    const layout = chart.getChartLayoutInterface()
+
+    trends.forEach((trend, index) => {
+      const x = layout.getXLocation(!index ? minX : trend.createdAt)
+      const y = layout.getYLocation(minY + 0.02)
+
+      const el = document.getElementById(getTrendPointId(trend.id))
+      if (el) {
+        el.setAttribute(
+          'style',
+          `left: ${Math.round(x)}px; top: ${Math.round(y)}px;`
+        )
+      }
+    })
+  },
+})

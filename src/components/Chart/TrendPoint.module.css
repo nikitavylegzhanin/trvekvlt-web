@@ -1,0 +1,29 @@
+.container {
+  position: absolute;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-left: -0.3rem;
+  cursor: help;
+}
+
+.correction {
+  color: indianred;
+}
+
+.tooltip {
+  visibility: hidden;
+
+  position: absolute;
+  width: 70px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -43px;
+
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: normal;
+}
+
+.container:hover .tooltip {
+  visibility: visible;
+}
