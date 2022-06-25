@@ -1,0 +1,31 @@
+.tooltip {
+  background-color: var(--main-background-color);
+  border: 1px solid var(--main-border-color);
+  box-shadow: 1px 1px 6px var(--main-border-color);
+  color: var(--main-text-color);
+  padding: 0.5rem;
+}
+
+.tooltip > ul,
+.tooltip > ol {
+  margin: 0;
+  padding: 0 0 0 1em;
+}
+
+.tooltip ol ::marker {
+  color: #636d83;
+}
+
+.tooltip > ol > li:not(:first-child) {
+  padding-top: 0.5rem;
+}
+
+.tooltip ol > li:not(:last-child) {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--main-border-color);
+}
+
+.tooltip ul ul,
+.tooltip ol ul {
+  padding-left: 0;
+}

@@ -36,6 +36,15 @@ const parseDateLink = new ApolloLink((operation, forward) =>
       )
     }
 
+    if (response?.data?.positions) {
+      response.data.positions = response.data.positions.map(
+        (position: any) => ({
+          ...position,
+          closedAt: new Date(position.closedAt),
+        })
+      )
+    }
+
     return response
   })
 )
