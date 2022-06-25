@@ -59,7 +59,7 @@ const Bots = ({ activeBotId, selectBot }: Props) => {
 
   return (
     <ul className={styles.bots}>
-      {data?.bots.map((bot) => (
+      {data?.bots?.map((bot) => (
         <li key={bot.id}>
           <button
             className={[
