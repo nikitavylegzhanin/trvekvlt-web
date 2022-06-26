@@ -15,9 +15,11 @@ const App = () => {
       </section>
 
       <section className={styles.chart}>
-        {!!bot && <CandlestickChart botId={bot.id} levels={bot.levels} />}
-
-        <HistoricalChart />
+        {bot ? (
+          <CandlestickChart botId={bot.id} levels={bot.levels} />
+        ) : (
+          <HistoricalChart />
+        )}
       </section>
 
       <section className={styles.notifications} />

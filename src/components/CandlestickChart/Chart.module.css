@@ -29,3 +29,13 @@
 .tooltip ol ul {
   padding-left: 0;
 }
+
+.scrollY {
+  position: absolute;
+  left: 0;
+  top: 20px;
+  bottom: 50px;
+  width: 50px;
+  cursor: ns-resize;
+  user-select: none;
+}
