@@ -1,4 +1,4 @@
-query Chart($botId: ID!, $from: Date!, $to: Date!, $interval: Int) {
+query Chart($botId: ID!, $from: DateTime!, $to: DateTime!, $interval: Int!) {
   chart(botId: $botId, from: $from, to: $to, interval: $interval) {
     candles {
       date
@@ -25,12 +25,6 @@ query Chart($botId: ID!, $from: Date!, $to: Date!, $interval: Int) {
       rule
       createdAt
       updatedAt
-      position {
-        id
-        status
-        createdAt
-        updatedAt
-      }
     }
   }
 }

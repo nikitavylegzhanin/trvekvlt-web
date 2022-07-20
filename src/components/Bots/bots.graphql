@@ -1,0 +1,16 @@
+query Bots {
+  bots {
+    id
+    accountId
+    name
+    ticker
+    instrumentType
+    status
+    createdAt
+    updatedAt
+    levels {
+      id
+      value
+    }
+  }
+}

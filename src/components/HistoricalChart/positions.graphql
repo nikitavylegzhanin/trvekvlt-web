@@ -1,0 +1,26 @@
+query Positions($to: DateTime!, $from: DateTime!) {
+  positions(to: $to, from: $from) {
+    isClosed
+    closedAt
+    instrument {
+      figi
+      ticker
+      name
+    }
+    profit {
+      usd
+      percent
+    }
+    operations {
+      id
+      parentOperationId
+      currency
+      payment
+      price
+      quantity
+      date
+      type
+      operationType
+    }
+  }
+}

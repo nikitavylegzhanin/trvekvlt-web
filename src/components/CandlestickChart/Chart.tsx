@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback, MouseEvent, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
 import { loader } from 'graphql.macro'
 import GoogleChart from 'react-google-charts'
-import { isWithinInterval } from 'date-fns'
+import { isWithinInterval, startOfToday, endOfToday } from 'date-fns'
 
 import { Bot, Level } from 'components/Bots'
+import styles from './Chart.module.css'
 import { ChartData } from './Chart.types'
 import Controls from './Controls'
 import TrendPoint from './TredPoint'
@@ -25,11 +26,28 @@ type Props = {
   levels: Level[]
 }
 
+type Scroll = {
+  isScrolling: boolean
+  y: number
+  clientY: number
+}
+
+const initScroll = {
+  isScrolling: false,
+  y: 0,
+  clientY: 0,
+}
+
 const Chart = ({ botId, levels }: Props) => {
+  const [scroll, setScroll] = useState<Scroll>(initScroll)
+  const [{ max, min }, setMaxMin] = useState<{ max: number; min: number }>({
+    max: 0,
+    min: 0,
+  })
   const [candleInterval, setCandleInterval] = useState<2 | 3 | 4>(2)
   const [tradingInterval, setTradingInterval] = useState({
-    from: new Date('2022-06-06T16:00:01'),
-    to: new Date('2022-06-06T23:59:59'),
+    from: startOfToday(),
+    to: endOfToday(),
   })
   const { loading, error, data } = useQuery<{ chart: ChartData }>(chartQuery, {
     variables: {
@@ -39,7 +57,7 @@ const Chart = ({ botId, levels }: Props) => {
     },
   })
 
-  const { max, min } = useMemo(
+  const initMaxMin = useMemo(
     () => ({
       max:
         Math.max(...(data?.chart.candles.map((candle) => candle.high) || [0])) +
@@ -50,6 +68,59 @@ const Chart = ({ botId, levels }: Props) => {
     }),
     [data?.chart?.candles]
   )
+
+  useEffect(() => setMaxMin(initMaxMin), [initMaxMin])
+
+  useEffect(() => {
+    const scale = scroll.y / 1000
+
+    setMaxMin({
+      max: initMaxMin.max * (1 - scale),
+      min: initMaxMin.min * (1 + scale),
+    })
+  }, [initMaxMin, scroll.y])
+
+  const onMouseDown = useCallback(
+    (e: MouseEvent<HTMLDivElement>) =>
+      setScroll((scroll) => ({
+        ...scroll,
+        isScrolling: true,
+        clientY: e.clientY,
+      })),
+    []
+  )
+
+  const onMouseUp = useCallback(
+    () =>
+      setScroll((scroll) => ({
+        ...scroll,
+        isScrolling: false,
+      })),
+    []
+  )
+
+  const onMouseMove = useCallback(
+    (e: MouseEvent<HTMLDivElement>) =>
+      setScroll((scroll) => {
+        if (scroll.isScrolling) {
+          return {
+            ...scroll,
+            y: scroll.y - e.clientY + scroll.clientY,
+            clientY: e.clientY,
+          }
+        }
+
+        return scroll
+      }),
+    []
+  )
+
+  const onMouseLeave = useCallback(
+    () => setScroll((scroll) => ({ ...scroll, isScrolling: false })),
+    []
+  )
+
+  const onDoubleClick = useCallback(() => setScroll(initScroll), [])
 
   const chartData = useMemo(() => {
     if (!data?.chart.candles.length) {
@@ -125,16 +196,10 @@ const Chart = ({ botId, levels }: Props) => {
 
   const chartEvents = useMemo(
     () =>
-      !data?.chart
+      !data?.chart.candles[0]
         ? []
-        : [
-            getTrendPointsEvent(
-              data.chart.trends,
-              data.chart.candles[0].date,
-              min
-            ),
-          ],
-    [data?.chart, min]
+        : [getTrendPointsEvent(data.chart.trends, data.chart.candles[0].date)],
+    [data?.chart]
   )
 
   if (loading) return <span>Loading...</span>
@@ -149,6 +214,15 @@ const Chart = ({ botId, levels }: Props) => {
         data={chartData}
         options={options}
         chartEvents={chartEvents}
+      />
+
+      <div
+        className={styles.scrollY}
+        onDoubleClick={onDoubleClick}
+        onMouseLeave={onMouseLeave}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+        onMouseMove={onMouseMove}
       />
 
       {data?.chart.trends.map((trend) => (

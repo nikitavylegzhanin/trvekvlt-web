@@ -119,8 +119,7 @@ export const getTrendPointId = (id: Trend['id']) => `chartTrendPoint${id}`
 
 export const getTrendPointsEvent = (
   trends: Trend[],
-  minX: Date,
-  minY: number
+  minX: Date
 ): ReactGoogleChartEvent => ({
   eventName: 'ready',
   callback: (event) => {
@@ -129,14 +128,10 @@ export const getTrendPointsEvent = (
 
     trends.forEach((trend, index) => {
       const x = layout.getXLocation(!index ? minX : trend.createdAt)
-      const y = layout.getYLocation(minY + 0.02)
 
       const el = document.getElementById(getTrendPointId(trend.id))
       if (el) {
-        el.setAttribute(
-          'style',
-          `left: ${Math.round(x)}px; top: ${Math.round(y)}px;`
-        )
+        el.setAttribute('style', `left: ${Math.round(x)}px; top: 430px;`)
       }
     })
   },

@@ -1,23 +1,10 @@
 import { useCallback, MouseEvent, Dispatch, SetStateAction } from 'react'
-import { gql, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
+import { loader } from 'graphql.macro'
 
 import styles from './Bots.module.css'
 
-const GET_BOTS = gql`
-  query Bots {
-    bots {
-      id
-      name
-      accountId
-      ticker
-      figi
-      levels {
-        id
-        value
-      }
-    }
-  }
-`
+const botsQuery = loader('./bots.graphql')
 
 export type Level = {
   id: string
@@ -39,7 +26,7 @@ type Props = {
 }
 
 const Bots = ({ activeBotId, selectBot }: Props) => {
-  const { loading, error, data } = useQuery<{ bots: Bot[] }>(GET_BOTS)
+  const { loading, error, data } = useQuery<{ bots: Bot[] }>(botsQuery)
 
   const onClick = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
@@ -59,7 +46,7 @@ const Bots = ({ activeBotId, selectBot }: Props) => {
 
   return (
     <ul className={styles.bots}>
-      {data?.bots.map((bot) => (
+      {data?.bots?.map((bot) => (
         <li key={bot.id}>
           <button
             className={[
