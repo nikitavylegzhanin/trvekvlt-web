@@ -1,14 +1,15 @@
-query Positions($from: Date!, $to: Date!) {
-  positions(from: $from, to: $to) {
+query Positions($to: DateTime!, $from: DateTime!) {
+  positions(to: $to, from: $from) {
+    isClosed
     closedAt
+    instrument {
+      figi
+      ticker
+      name
+    }
     profit {
       usd
       percent
-    }
-    instrument {
-      figi
-      name
-      ticker
     }
     operations {
       id

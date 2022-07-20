@@ -2,7 +2,7 @@ import { useMemo, useState, useCallback, MouseEvent, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
 import { loader } from 'graphql.macro'
 import GoogleChart from 'react-google-charts'
-import { isWithinInterval } from 'date-fns'
+import { isWithinInterval, startOfToday, endOfToday } from 'date-fns'
 
 import { Bot, Level } from 'components/Bots'
 import styles from './Chart.module.css'
@@ -46,8 +46,8 @@ const Chart = ({ botId, levels }: Props) => {
   })
   const [candleInterval, setCandleInterval] = useState<2 | 3 | 4>(2)
   const [tradingInterval, setTradingInterval] = useState({
-    from: new Date('2022-06-06T16:00:01'),
-    to: new Date('2022-06-06T23:59:59'),
+    from: startOfToday(),
+    to: endOfToday(),
   })
   const { loading, error, data } = useQuery<{ chart: ChartData }>(chartQuery, {
     variables: {
@@ -196,7 +196,7 @@ const Chart = ({ botId, levels }: Props) => {
 
   const chartEvents = useMemo(
     () =>
-      !data?.chart
+      !data?.chart.candles[0]
         ? []
         : [getTrendPointsEvent(data.chart.trends, data.chart.candles[0].date)],
     [data?.chart]
