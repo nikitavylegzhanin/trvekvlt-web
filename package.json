@@ -13,7 +13,7 @@
     "web-vitals": "2.1.4"
   },
   "devDependencies": {
-    "@types/node": "16.11.38",
+    "@types/node": "16.11.45",
     "@types/react": "18.0.11",
     "@types/react-dom": "18.0.6",
     "graphql": "16.5.0",
