@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useCallback, MouseEvent } from 'react'
-import { set } from 'date-fns'
+import { endOfDay } from 'date-fns'
 
 import TradingInterval from './TradingInterval'
 import styles from './Controls.module.css'
@@ -35,11 +35,11 @@ const ChartControls = ({
   )
 
   const onSelectDay = useCallback(
-    (date?: Date) => {
-      if (date) {
+    (from?: Date) => {
+      if (from) {
         setTradingInterval({
-          from: set(date, { hours: 16 }),
-          to: set(date, { hours: 23 }),
+          from,
+          to: endOfDay(from),
         })
       }
     },
