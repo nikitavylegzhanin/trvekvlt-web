@@ -1,7 +1,10 @@
-.levels {
+.wrapper {
   margin: 1em;
   width: 320px;
   height: 400px;
   border: 1px solid var(--main-border-color);
+}
+
+.levels {
   overflow-y: auto;
 }

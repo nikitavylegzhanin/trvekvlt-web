@@ -1,11 +1,13 @@
-import { useMemo } from 'react'
+import { useMemo, useCallback } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { loader } from 'graphql.macro'
 
 import { Bot } from 'components/Bots'
 import styles from './Levels.module.css'
+import AddLevel from './AddLevel'
 import LevelItem, { Level } from './Level'
 
+const addLevelMutation = loader('./addLevel.gql')
 const levelsQuery = loader('./levels.gql')
 const deleteLevelMutation = loader('./deleteLevel.gql')
 const changeLevelStatusMutation = loader('./changeLevelStatus.gql')
@@ -21,6 +23,45 @@ const Levels = ({ botId }: Props) => {
   const { loading, error, data } = useQuery<{ levels: Level[] }>(levelsQuery, {
     variables: { botId },
   })
+
+  const [addLevel] = useMutation<
+    { addLevel: Level },
+    { botId: Bot['id']; value: Level['value'] }
+  >(addLevelMutation, {
+    update: (cache, result) => {
+      if (!result.data) return
+
+      const { addLevel: level } = result.data
+      cache.updateQuery<{ levels: Level[] }>(
+        {
+          query: levelsQuery,
+          variables: { botId },
+        },
+        (data) => {
+          if (!data?.levels) return { levels: [] }
+
+          if (data.levels.findIndex((v) => v.id === level.id) !== -1)
+            return data
+
+          return {
+            levels: [
+              ...data.levels,
+              {
+                ...level,
+                openPositions: [],
+                closedPositions: [],
+              },
+            ],
+          }
+        }
+      )
+    },
+  })
+
+  const onAddLevel = useCallback(
+    (value: Level['value']) => addLevel({ variables: { botId, value } }),
+    [addLevel, botId]
+  )
 
   const [deleteLevel] = useMutation<
     { deleteLevel: number },
@@ -82,15 +123,19 @@ const Levels = ({ botId }: Props) => {
   if (error) return <span>Error: {error.message}</span>
 
   return (
-    <div className={styles.levels}>
-      {levels.map((level) => (
-        <LevelItem
-          key={level.id}
-          {...level}
-          onDelete={deleteLevel}
-          onChangeLevelStatus={changeLevelStatus}
-        />
-      ))}
+    <div className={styles.wrapper}>
+      <AddLevel onAddLevel={onAddLevel} />
+
+      <div className={styles.levels}>
+        {levels.map((level) => (
+          <LevelItem
+            key={level.id}
+            {...level}
+            onDelete={deleteLevel}
+            onChangeLevelStatus={changeLevelStatus}
+          />
+        ))}
+      </div>
     </div>
   )
 }

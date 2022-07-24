@@ -1,0 +1,9 @@
+mutation AddLevel($value: Float!, $botId: ID!) {
+  addLevel(value: $value, botId: $botId) {
+    id
+    value
+    status
+    createdAt
+    updatedAt
+  }
+}
