@@ -1,0 +1,8 @@
+.wrapper {
+  height: calc(100% - 73px);
+  overflow-y: auto;
+}
+
+.levels {
+  height: calc(100% + 146px - 2em);
+}

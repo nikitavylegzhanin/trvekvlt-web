@@ -1,0 +1,3 @@
+mutation DeleteLevel($levelId: ID!) {
+  deleteLevel(levelId: $levelId)
+}

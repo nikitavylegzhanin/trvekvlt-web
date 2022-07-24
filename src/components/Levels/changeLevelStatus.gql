@@ -1,0 +1,3 @@
+mutation ChangeLevelStatus($status: LevelStatus!, $levelId: ID!) {
+  changeLevelStatus(status: $status, levelId: $levelId)
+}

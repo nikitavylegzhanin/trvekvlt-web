@@ -1,7 +1,7 @@
 .container {
   display: grid;
   grid-template-columns: auto 400px;
-  grid-template-rows: 60px 500px auto;
+  grid-template-rows: 60px 50% auto;
 
   width: 100vw;
   height: 100vh;
@@ -19,6 +19,11 @@
   grid-row: 2;
 
   position: relative;
+}
+
+.settings {
+  grid-column: 1;
+  grid-row: 3;
 }
 
 .notifications {
