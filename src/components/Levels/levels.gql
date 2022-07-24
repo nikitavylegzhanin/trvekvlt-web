@@ -1,0 +1,15 @@
+query Levels($botId: ID!) {
+  levels(botId: $botId) {
+    id
+    value
+    status
+    createdAt
+    updatedAt
+    openPositions {
+      id
+    }
+    closedPositions {
+      id
+    }
+  }
+}
