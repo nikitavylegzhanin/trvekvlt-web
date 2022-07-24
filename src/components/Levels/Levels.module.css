@@ -1,10 +1,8 @@
 .wrapper {
-  margin: 1em;
-  width: 320px;
-  height: 400px;
-  border: 1px solid var(--main-border-color);
+  height: calc(100% - 73px);
+  overflow-y: auto;
 }
 
 .levels {
-  overflow-y: auto;
+  height: calc(100% + 146px - 2em);
 }

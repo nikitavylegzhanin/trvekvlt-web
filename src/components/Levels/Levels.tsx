@@ -123,20 +123,22 @@ const Levels = ({ botId }: Props) => {
   if (error) return <span>Error: {error.message}</span>
 
   return (
-    <div className={styles.wrapper}>
+    <>
       <AddLevel onAddLevel={onAddLevel} />
 
-      <div className={styles.levels}>
-        {levels.map((level) => (
-          <LevelItem
-            key={level.id}
-            {...level}
-            onDelete={deleteLevel}
-            onChangeLevelStatus={changeLevelStatus}
-          />
-        ))}
+      <div className={styles.wrapper}>
+        <div className={styles.levels}>
+          {levels.map((level) => (
+            <LevelItem
+              key={level.id}
+              {...level}
+              onDelete={deleteLevel}
+              onChangeLevelStatus={changeLevelStatus}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

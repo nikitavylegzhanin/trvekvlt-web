@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Bots, { Bot } from 'components/Bots'
 import CandlestickChart from 'components/CandlestickChart'
 import HistoricalChart from 'components/HistoricalChart'
+import Levels from 'components/Levels'
 import styles from './App.module.css'
 
 const App = () => {
@@ -20,6 +21,10 @@ const App = () => {
         ) : (
           <HistoricalChart />
         )}
+      </section>
+
+      <section className={styles.settings}>
+        {bot && <Levels botId={bot.id} />}
       </section>
 
       <section className={styles.notifications} />

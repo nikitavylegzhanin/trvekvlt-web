@@ -210,7 +210,7 @@ const Chart = ({ botId, levels }: Props) => {
       <GoogleChart
         chartType="CandlestickChart"
         width="100%"
-        height="500px"
+        height="100%"
         data={chartData}
         options={options}
         chartEvents={chartEvents}
