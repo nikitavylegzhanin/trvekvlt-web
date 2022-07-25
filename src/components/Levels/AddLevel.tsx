@@ -1,7 +1,45 @@
 import { useCallback, FormEventHandler, useState } from 'react'
+import styled from 'styled-components'
 
 import { Level } from './Level'
-import styles from './AddLevel.module.css'
+
+const Form = styled.form`
+  border-bottom: 1px solid ${(props) => props.theme.colors.border};
+
+  padding: 0 1em;
+  height: 5em;
+  display: flex;
+  align-items: center;
+`
+
+const Input = styled.input`
+  border: 2px solid ${(props) => props.theme.colors.border};
+  color: ${(props) => props.theme.colors.text};
+
+  &:focus {
+    box-shadow: 0 0 5px ${(props) => props.theme.colors.primary};
+    outline-width: 0;
+  }
+
+  width: 100%;
+  height: 3em;
+  background-color: transparent;
+  box-shadow: none;
+  border-radius: 0.5em;
+  appearance: none;
+  padding-left: 0.5em;
+`
+
+const Button = styled.button`
+  width: auto;
+  margin-left: 1em;
+  color: black;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`
 
 type Props = {
   onAddLevel: (value: Level['value']) => Promise<any>
@@ -33,17 +71,13 @@ const AddLevel = ({ onAddLevel }: Props) => {
   )
 
   return (
-    <form
-      className={styles['add-level']}
-      autoComplete="off"
-      onSubmit={onSubmit}
-    >
-      <input name="value" placeholder="Level value" autoComplete="off" />
+    <Form autoComplete="off" onSubmit={onSubmit}>
+      <Input name="value" placeholder="Level value" autoComplete="off" />
 
-      <button type="submit" disabled={isLoading}>
+      <Button type="submit" disabled={isLoading}>
         Add
-      </button>
-    </form>
+      </Button>
+    </Form>
   )
 }
 

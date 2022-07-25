@@ -1,19 +1,23 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ApolloProvider } from '@apollo/client'
-import 'react-day-picker/dist/style.css'
+import { ThemeProvider } from 'styled-components'
 
 import App from 'components/App'
 import reportWebVitals from './reportWebVitals'
 import client from './client'
-import './index.css'
+import theme, { GlobalStyle } from './theme'
 
 const root = createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(
   <StrictMode>
     <ApolloProvider client={client}>
-      <App />
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+
+        <App />
+      </ThemeProvider>
     </ApolloProvider>
   </StrictMode>
 )
