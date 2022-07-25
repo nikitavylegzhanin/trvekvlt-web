@@ -1,7 +1,7 @@
 import { useCallback, FormEventHandler, useState } from 'react'
 import styled from 'styled-components'
 
-import { Level } from './Level'
+import { Trend } from './Trend'
 
 const Form = styled.form`
   border-bottom: 1px solid ${(props) => props.theme.colors.border};
@@ -12,67 +12,63 @@ const Form = styled.form`
   align-items: center;
 `
 
-const Input = styled.input`
+const Select = styled.select`
   border: 2px solid ${(props) => props.theme.colors.border};
-  color: ${(props) => props.theme.colors.text};
 
   &:focus {
     box-shadow: 0 0 5px ${(props) => props.theme.colors.primary};
     outline-width: 0;
   }
 
+  box-shadow: none;
+  border-radius: 0.5em;
   width: 100%;
   height: 3em;
   background-color: transparent;
-  box-shadow: none;
-  border-radius: 0.5em;
-  appearance: none;
   padding-left: 0.5em;
 `
 
 const Button = styled.button`
-  width: auto;
   margin-left: 1em;
-  color: black;
 
   &:disabled {
     cursor: not-allowed;
-    opacity: 0.5;
   }
 `
 
 type Props = {
-  onAddLevel: (value: Level['value']) => Promise<any>
+  onAddTrend: (direction: Trend['direction']) => Promise<any>
 }
 
-const AddLevel = ({ onAddLevel }: Props) => {
+const AddTrend = ({ onAddTrend }: Props) => {
   const [isLoading, setLoadingState] = useState(false)
 
   const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
     async (e) => {
       e.preventDefault()
 
-      const value = parseFloat((e.target as any)[0].value)
-      e.currentTarget.reset()
+      const direction: Trend['direction'] = (e.target as any).direction.value
 
-      if (!isNaN(value)) {
-        setLoadingState(true)
+      setLoadingState(true)
 
-        try {
-          await onAddLevel(value)
-        } catch (error) {
-          console.debug(error)
-        } finally {
-          setLoadingState(false)
-        }
+      try {
+        await onAddTrend(direction)
+      } catch (error) {
+        console.debug(error)
+      } finally {
+        setLoadingState(false)
       }
     },
-    [onAddLevel]
+    [onAddTrend]
   )
 
   return (
     <Form autoComplete="off" onSubmit={onSubmit}>
-      <Input name="value" placeholder="Level value" autoComplete="off" />
+      <Select name="direction">
+        <option value="UP">Uptrend</option>
+
+        <option value="DOWN">Downtrend</option>
+      </Select>
 
       <Button type="submit" disabled={isLoading}>
         Add
@@ -81,4 +77,4 @@ const AddLevel = ({ onAddLevel }: Props) => {
   )
 }
 
-export default AddLevel
+export default AddTrend

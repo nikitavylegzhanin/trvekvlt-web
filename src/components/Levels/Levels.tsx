@@ -3,7 +3,6 @@ import { useQuery, useMutation } from '@apollo/client'
 import { loader } from 'graphql.macro'
 
 import { Bot } from 'components/Bots'
-import styles from './Levels.module.css'
 import AddLevel from './AddLevel'
 import LevelItem, { Level } from './Level'
 
@@ -123,22 +122,20 @@ const Levels = ({ botId }: Props) => {
   if (error) return <span>Error: {error.message}</span>
 
   return (
-    <>
+    <div>
       <AddLevel onAddLevel={onAddLevel} />
 
-      <div className={styles.wrapper}>
-        <div className={styles.levels}>
-          {levels.map((level) => (
-            <LevelItem
-              key={level.id}
-              {...level}
-              onDelete={deleteLevel}
-              onChangeLevelStatus={changeLevelStatus}
-            />
-          ))}
-        </div>
+      <div>
+        {levels.map((level) => (
+          <LevelItem
+            key={level.id}
+            {...level}
+            onDelete={deleteLevel}
+            onChangeLevelStatus={changeLevelStatus}
+          />
+        ))}
       </div>
-    </>
+    </div>
   )
 }
 

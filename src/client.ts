@@ -9,6 +9,20 @@ const httpLink = new HttpLink({ uri: process.env.REACT_APP_API_URL })
 
 const parseDateLink = new ApolloLink((operation, forward) =>
   forward(operation).map((response) => {
+    if (response?.data?.trends) {
+      response.data.trends = response.data.trends.map((trend: any) => ({
+        ...trend,
+        createdAt: new Date(trend.createdAt),
+      }))
+    }
+
+    if (response?.data?.addTrend) {
+      response.data.addTrend = {
+        ...response.data.addTrend,
+        createdAt: new Date(response.data.addTrend.createdAt),
+      }
+    }
+
     if (response?.data?.chart?.candles) {
       response.data.chart.candles = response.data.chart.candles.map(
         (candle: any) => ({
