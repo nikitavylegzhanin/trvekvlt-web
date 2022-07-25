@@ -1,0 +1,9 @@
+query Trends($botId: ID!) {
+  trends(botId: $botId) {
+    id
+    direction
+    type
+    createdAt
+    updatedAt
+  }
+}

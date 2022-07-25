@@ -1,0 +1,9 @@
+mutation AddTrend($direction: TrendDirection!, $botId: ID!) {
+  addTrend(direction: $direction, botId: $botId) {
+    id
+    direction
+    type
+    createdAt
+    updatedAt
+  }
+}
