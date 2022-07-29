@@ -2,6 +2,7 @@ import { useState } from 'react'
 import styled from 'styled-components'
 
 import Bots, { Bot } from 'components/Bots'
+import BotStatus from 'components/BotStatus'
 import CandlestickChart from 'components/CandlestickChart'
 import HistoricalChart from 'components/HistoricalChart'
 
@@ -37,17 +38,23 @@ const NotificationsSection = styled.section`
 `
 
 const App = () => {
-  const [bot, selectBot] = useState<Bot>()
+  const [botId, setBotId] = useState<Bot['id']>()
 
   return (
     <Wrapper>
       <BotsSection>
-        <Bots activeBotId={bot?.id} selectBot={selectBot} />
+        <Bots botId={botId} setBotId={setBotId} />
       </BotsSection>
 
       <ContentSection>
-        {bot ? (
-          <CandlestickChart botId={bot.id} levels={bot.levels} />
+        {botId ? (
+          <>
+            <div style={{ position: 'absolute', zIndex: 1, left: 50, top: 10 }}>
+              <BotStatus botId={botId} />
+            </div>
+
+            <CandlestickChart botId={botId} />
+          </>
         ) : (
           <HistoricalChart />
         )}

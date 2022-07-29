@@ -1,0 +1,3 @@
+mutation ChangeBotStatus($status: BotStatus!, $botId: ID!) {
+  changeBotStatus(status: $status, botId: $botId)
+}

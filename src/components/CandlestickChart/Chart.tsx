@@ -23,7 +23,7 @@ const chartQuery = loader('./chart.graphql')
 
 type Props = {
   botId: Bot['id']
-  levels: Level[]
+  levels?: Level[]
 }
 
 type Scroll = {
@@ -38,7 +38,7 @@ const initScroll = {
   clientY: 0,
 }
 
-const Chart = ({ botId, levels }: Props) => {
+const Chart = ({ botId, levels = [] }: Props) => {
   const [scroll, setScroll] = useState<Scroll>(initScroll)
   const [{ max, min }, setMaxMin] = useState<{ max: number; min: number }>({
     max: 0,

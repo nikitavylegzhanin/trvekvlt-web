@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client'
 import { loader } from 'graphql.macro'
 import styled, { css } from 'styled-components'
 
-const botsQuery = loader('./bots.gql')
+export const botsQuery = loader('./bots.gql')
 
 const Wrapper = styled.ul`
   list-style-type: none;
@@ -48,28 +48,29 @@ export type Bot = {
   accountId: string
   ticker: string
   figi: string
+  status: 'RUNNING' | 'DISABLED_DURING_SESSION' | 'DISABLED'
   levels: Level[]
 }
 
 type Props = {
-  activeBotId?: Bot['id']
-  selectBot: Dispatch<SetStateAction<Bot | undefined>>
+  botId?: Bot['id']
+  setBotId: Dispatch<SetStateAction<Bot['id'] | undefined>>
 }
 
-const Bots = ({ activeBotId, selectBot }: Props) => {
+const Bots = ({ botId, setBotId }: Props) => {
   const { loading, error, data } = useQuery<{ bots: Bot[] }>(botsQuery)
 
   const onClick = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
       const { value } = e.currentTarget
       const bot =
-        activeBotId !== value
+        botId !== value
           ? data?.bots.find((bot) => bot.id === e.currentTarget.value)
           : undefined
 
-      return selectBot(bot)
+      return setBotId(bot?.id)
     },
-    [data?.bots, activeBotId, selectBot]
+    [data?.bots, botId, setBotId]
   )
 
   if (loading) return <span>Loading...</span>
@@ -79,11 +80,7 @@ const Bots = ({ activeBotId, selectBot }: Props) => {
     <Wrapper>
       {data?.bots?.map((bot) => (
         <li key={bot.id}>
-          <Button
-            isActive={activeBotId === bot.id}
-            value={bot.id}
-            onClick={onClick}
-          >
+          <Button isActive={botId === bot.id} value={bot.id} onClick={onClick}>
             {bot.name}
           </Button>
         </li>
